@@ -1,0 +1,159 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta name=viewport content="width=device-width, initial-scale=1">
+<title>OnchClub</title>
+<meta charset="utf-8"/>
+<meta name="description" lang="en" content="Create awesome webpages in 5 seconds." />
+<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<style>	
+body {
+font-size: 1.7em;
+transition: background-color 1s;
+background-color: white;
+}
+.editor_toolbar,.editor_div {
+background-color: white;
+opacity:0;
+transition:opacity 1s,height 1s;
+}
+.displayed{
+display:initial;
+opacity:100;
+}
+.main_logo_onchclub {font-size: 3em;}
+.form-control,.btn {
+width: 100%;
+}
+#editor {overflow:scroll; max-height:300px;}
+
+/*
+EmojiSymbols Font (c)blockworks - Kenichi Kaneko
+http://emojisymbols.com/
+*/
+@font-face {
+		font-family: "EmojiSymbols";
+		src: url('./static/EmojiSymbols-Regular.woff') format('woff');
+		text-decoration: none;
+		font-style: normal;
+	}
+	.emj {
+		font-family: "EmojiSymbols";
+		line-height: 1;
+	}
+	
+.toolbox_not_active{display:none;}
+.toolbox_active{position:fixed;bottom:10px;display:initial;}
+
+</style>
+</head>
+<body id="bbody">
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-12 main_logo_onchclub">OnchClub</div>
+      </div>
+      
+      <div class="row" id="slog_new">
+        <div class="col-sm-4">Create an awesome webpage in less than 5 secs</div>
+        <div class="col-sm-8">
+
+		
+		
+      <div class="row" id="newpagetoolbox">
+		<div class="col-sm-10"><input type="text" class="form-control" id="input_new_title" placeholder="Input a title for your page" /></div>
+		<div class="col-sm-2"><button type="button" class="btn btn-primary" id="submit_new_title">Go</button></div>
+      </div>
+	 
+		
+		</div>
+      </div>
+	  <div id="modal" class="modal_not_active"></div>
+	  <div class="row editor_toolbar toolbox_not_active" data-role="editor-toolbar" data-target="#editor" id="toolbar">
+	  
+		<div class="tool col-xs-2"><button type="button" class="btn" id="bold_button" style="font-weight: bold" data-edit="bold">B</button></div>
+		<div class="tool col-xs-2"><button type="button" class="btn" id="italic_button" style="font-style: italic;" data-edit="italic">I</button></div>
+		<div class="tool col-xs-2"><button type="button" class="btn" id="underline_button" style="text-decoration:underline;" data-edit="underline">U</button></div>
+		<div class="tool col-xs-2">
+	  
+			<div class="dropdown">
+				<button class="btn dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					<span style="font-size:larger;">T</span><span style="font-size:smaller">T</span>
+				</button>
+				<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+					<button type="button" class="btn dropdown-item" id="size_regular_button"onclick="document.execCommand('formatblock',false,'P');">Regular paragraph</button>
+					<button type="button" class="btn dropdown-item" id="size_title1" onclick="document.execCommand('formatblock',false,'H1');">Title 1</button>
+					<button type="button" class="btn dropdown-item" id="size_title2" onclick="document.execCommand('formatblock',false,'H2');">Title 2</button>
+					<button type="button" class="btn dropdown-item" id="size_title3" onclick="document.execCommand('formatblock',false,'H3');">Title 3</button>
+				</div>
+			</div>
+
+		</div>
+		<div class="tool col-xs-2">
+			<div class="dropdown">
+				<button class="btn dropdown-toggle" type="button" id="dropdownHyperlink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" onclick="setTimeout(function(){$('#new_link_input').focus();}, 50);setTimeout(function(){$('#new_link_input').focus();}, 60);">@</button>
+			<div class="dropdown-menu" aria-labelledby="dropdownHyperlink">
+				<input type="url" data-edit="createLink" placeholder="Input URL" id="new_link_input"></input>
+				<button class="btn" type="button" id="ok_close_linkdropdown" onclick="$('#editor').focus();">Ok</button>
+			</div>
+			</div>
+		</div>
+
+		<div class="tool col-xs-2" id="savepagetoolbox">
+			<button type="button" class="btn" id="submit_new_title btn-primary"><span class="emj">&#x1F4BE;</span></button>
+		</div>
+
+	  </div>
+	  <div class="row">
+        <div class="col-sm-12 editor_div" id="editor">
+		<h1 id="default_editor_title"></h1>
+		<h2>Hello world!</h2>
+		<p>This webpage is almost empty! Sad.</p>
+		</div>
+      </div>
+		
+    </div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
+
+<script src="http://code.jquery.com/jquery-2.2.4.min.js"></script>
+<script src="jquery.hotkeys.js"></script>
+<script src="bootstrap-wysiwyg.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
+<script>
+$editor_mode = false;
+
+$('#editor').wysiwyg();
+document.getElementById('submit_new_title').addEventListener("click", display_editor); 
+
+
+	
+$('body').on( "mousedown mouseup touchstart touchend", function(e){mouseup_event(); });
+
+
+function display_editor() {
+
+$( "#editor" ).toggleClass( "displayed" );
+$( "#toolbar" ).toggleClass( "displayed" );
+document.getElementById("slog_new").style.display = "none";
+if(document.getElementById('input_new_title').value != ""){document.getElementById("default_editor_title").innerHTML = document.getElementById('input_new_title').value;}else{document.getElementById("default_editor_title").innerHTML = "My awesome webpage!";}
+
+document.getElementById("newpagetoolbox").style.display = "none";
+$('#editor').focus();
+$editor_mode=true;
+
+}
+
+function mouseup_event() {
+if((window.getSelection().anchorOffset != window.getSelection().focusOffset)&&($editor_mode==true)) {
+document.getElementById("toolbar").classList.add("toolbox_active");
+document.getElementById("toolbar").classList.remove("toolbox_not_active");
+
+}
+else {
+document.getElementById("toolbar").classList.add("toolbox_not_active");
+document.getElementById("toolbar").classList.remove("toolbox_active");
+
+}
+}
+</script>
+</body>
+</html>	
